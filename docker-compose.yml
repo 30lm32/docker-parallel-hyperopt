@@ -40,27 +40,3 @@ services:
     command: ["hyperopt-mongo-worker", "--mongo=mongodb:27017/foo_db", "--poll-interval=0.1"]
     volumes:
       - ./hyperopt-mongo-worker/:/hyperopt/
-
-
-
-  # mongo-express:
-  #   image: "mongo-express"
-  #   # build:
-  #   #   context: ./mongo-express
-  #   #   dockerfile: Dockerfile
-  #   depends_on:
-  #   - mongodb
-  #   links:
-  #   - mongodb
-  #   ports:
-  #   - "8081:8081"
-  #   container_name: "mongo-express"
-  #   environment:
-  #     ME_CONFIG_OPTIONS_EDITORTHEME: "ambiance"
-  #     ME_CONFIG_BASICAUTH_USERNAME: "user"
-  #     ME_CONFIG_BASICAUTH_PASSWORD: "fairly long password"
-  #   command: ["./wait-for-it.sh", "mongodb:27017", "-t", "120", "--", "node", "app"]
-  #   volumes:
-  #   - ./common/:/node_modules/mongo-express
-
-
