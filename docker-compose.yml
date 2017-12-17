@@ -1,0 +1,66 @@
+version: "3"
+services:
+  mongodb:
+    image: "mongo"
+    ports:
+    - "27017:27017"
+    container_name: "mongodb"
+  xgboost:
+    build:
+      context: ./xgboost
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+    container_name: "xgboost"
+    volumes:
+      - ./xgboost/src:/xgboost/
+  hyperopt:
+    build:
+      context: ./hyperopt
+      dockerfile: Dockerfile
+    depends_on:
+      - mongodb
+      - xgboost
+    links:
+      - mongodb
+    container_name: "hyperopt"
+    volumes:
+      - ./hyperopt/src:/hyperopt/
+  hyperopt-mongo-worker:
+    build:
+      context: ./hyperopt
+      dockerfile: Dockerfile
+    depends_on:
+      - xgboost
+      - hyperopt
+      - mongodb
+    links:
+      - mongodb
+    container_name: "hyperopt-mongo-worker"
+    command: ["hyperopt-mongo-worker", "--mongo=mongodb:27017/foo_db", "--poll-interval=0.1"]
+    volumes:
+      - ./hyperopt-mongo-worker/:/hyperopt/
+
+
+
+  # mongo-express:
+  #   image: "mongo-express"
+  #   # build:
+  #   #   context: ./mongo-express
+  #   #   dockerfile: Dockerfile
+  #   depends_on:
+  #   - mongodb
+  #   links:
+  #   - mongodb
+  #   ports:
+  #   - "8081:8081"
+  #   container_name: "mongo-express"
+  #   environment:
+  #     ME_CONFIG_OPTIONS_EDITORTHEME: "ambiance"
+  #     ME_CONFIG_BASICAUTH_USERNAME: "user"
+  #     ME_CONFIG_BASICAUTH_PASSWORD: "fairly long password"
+  #   command: ["./wait-for-it.sh", "mongodb:27017", "-t", "120", "--", "node", "app"]
+  #   volumes:
+  #   - ./common/:/node_modules/mongo-express
+
+
