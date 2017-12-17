@@ -5,22 +5,12 @@ services:
     ports:
     - "27017:27017"
     container_name: "mongodb"
-  xgboost:
-    build:
-      context: ./xgboost
-      dockerfile: Dockerfile
-    depends_on:
-      - mongodb
-    container_name: "xgboost"
-    volumes:
-      - ./xgboost/src:/xgboost/
   hyperopt:
     build:
       context: ./hyperopt
       dockerfile: Dockerfile
     depends_on:
       - mongodb
-      - xgboost
     links:
       - mongodb
     container_name: "hyperopt"
@@ -31,7 +21,6 @@ services:
       context: ./hyperopt
       dockerfile: Dockerfile
     depends_on:
-      - xgboost
       - hyperopt
       - mongodb
     links:
